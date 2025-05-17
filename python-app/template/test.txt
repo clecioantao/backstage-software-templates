@@ -1,4 +1,4 @@
 Esse é um arquivo de testes.
 
-Nome do app: ${values.app_name}
-Nome do env: ${values.app_env}
+Nome do app: ${{values.app_name}}
+Nome do env: ${{values.app}}
