@@ -12,7 +12,7 @@ def info():
     return jsonify({
     	'time': datetime.datetime.now().strftime("%I:%M:%S%p  on %B %d, %Y"),
     	'hostname': socket.gethostname(),
-        'message': 'You are doing great, little human! <3',
+        'message': 'You are doing great, little human! Clecio,
         'deployed_on': 'kubernetes',
         'env': '${{values.app_env}}',
         'app_name': '${{values.app_name}}'
