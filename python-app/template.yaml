@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: python-template-dashboard
-  title: Python Flask com Dashboard Grafana
+  title: Python Flask com Dashboard Grafana - Clecio
   description: Cria uma aplicação Flask com dashboard automatizado no Grafana
 spec:
   owner: development
