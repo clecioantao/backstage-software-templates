@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: python-template-dashboard
-  title: Python Flask com Dashboard Grafana - Clecio
+  title: Python Flask com Dashboard Grafana - Dash1
   description: Cria uma aplicação Flask com dashboard automatizado no Grafana
 spec:
   owner: development
@@ -60,7 +60,8 @@ spec:
       action: custom:create-grafana-dashboard
       input:
         dashboardName: ${{ parameters.component_id }}
-        folder: Aplicações
+        folderName: ${{ parameters.environment }}
+        jsonTemplatePath: ./grafana-base-dashboard.json
 
   output:
     links:
@@ -68,3 +69,5 @@ spec:
         url: ${{ steps['publish'].output.remoteUrl }}
       - title: Ver no catálogo
         url: /catalog/default/component/${{ parameters.component_id }}
+      - title: Acessar dashboard no Grafana
+        url: http://localhost:3333/d/${{ parameters.component_id }}
