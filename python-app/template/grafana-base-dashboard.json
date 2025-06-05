@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": null,
+    "title": "${DASHBOARD_NAME}",
+    "tags": ["generated"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 0,
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage (Exemplo)",
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+        "datasource": null,
+        "targets": [],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2
+      }
+    ]
+  },
+  "folderTitle": "${FOLDER_NAME}",
+  "overwrite": true
+}
