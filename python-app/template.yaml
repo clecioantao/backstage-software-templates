@@ -3,13 +3,13 @@ kind: Template
 metadata:
   name: python-template-dashboard
   title: Python Flask com Dashboard Grafana
-  description: Provisions a minimalistic Flask app com dashboard no Grafana
+  description: Cria uma aplicação Flask com dashboard automatizado no Grafana
 spec:
   owner: development
   type: service
 
   parameters:
-    - title: Preencha as informações
+    - title: Preencha os dados da aplicação
       required:
         - component_id
         - environment
@@ -17,7 +17,7 @@ spec:
         component_id:
           title: Nome do componente
           type: string
-          description: Nome do microserviço
+          description: Nome da aplicação (microserviço)
           pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
         environment:
           title: Ambiente
@@ -43,7 +43,7 @@ spec:
       input:
         allowedHosts:
           - github.com
-        description: This is ${{ parameters.component_id }}
+        description: Projeto ${{ parameters.component_id }}
         repoUrl: github.com?owner=org-tests-ca&repo=${{ parameters.component_id }}
         protectDefaultBranch: false
         repoVisibility: public
@@ -56,7 +56,7 @@ spec:
         catalogInfoPath: "/catalog-info.yaml"
 
     - id: dashboard
-      name: Criar dashboard no Grafana
+      name: Criar Dashboard no Grafana
       action: custom:create-grafana-dashboard
       input:
         dashboardName: ${{ parameters.component_id }}
@@ -64,7 +64,7 @@ spec:
 
   output:
     links:
-      - title: Acessar repositório
+      - title: Repositório no GitHub
         url: ${{ steps['publish'].output.remoteUrl }}
       - title: Ver no catálogo
         url: /catalog/default/component/${{ parameters.component_id }}
