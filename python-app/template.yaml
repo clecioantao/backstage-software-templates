@@ -2,30 +2,26 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: python-template-dashboard
-  title: Python Flask com Dashboard Grafana - Clecio
+  title: Python Flask com Dashboard Grafana
   description: Cria uma aplicação Flask com dashboard automatizado no Grafana
 spec:
   owner: development
   type: service
 
   parameters:
-    - title: Preencha os dados da aplicação
+    - title: Informações básicas
       required:
-        - component_id
-        - environment
+        - app_name
       properties:
-        component_id:
-          title: Nome do componente
+        app_name:
+          title: Nome da aplicação
           type: string
-          description: Nome da aplicação (microserviço)
-          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
-        environment:
+          description: Nome do seu serviço/app
+        app_env:
           title: Ambiente
           type: string
-          description: Onde será implantado
-          enum:
-            - dev
-            - prod
+          default: dev
+          enum: [dev, staging, prod]
 
   steps:
     - id: fetch-base
@@ -34,37 +30,20 @@ spec:
       input:
         url: ./template
         values:
-          app_name: ${{ parameters.component_id }}
-          app_env: ${{ parameters.environment }}
+          app_name: ${{ parameters.app_name }}
+          app_env: ${{ parameters.app_env }}
 
-    - id: publish
-      name: Publicar no GitHub
-      action: publish:github
-      input:
-        allowedHosts:
-          - github.com
-        description: Projeto ${{ parameters.component_id }}
-        repoUrl: github.com?owner=org-tests-ca&repo=${{ parameters.component_id }}
-        protectDefaultBranch: false
-        repoVisibility: public
-
-    - id: register
-      name: Registrar no catálogo
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: "/catalog-info.yaml"
-
-    - id: dashboard
-      name: Criar Dashboard no Grafana
+    - id: criar-dashboard
+      name: Criar dashboard no Grafana
       action: custom:create-grafana-dashboard
       input:
-        dashboardName: ${{ parameters.component_id }}
-        folder: Aplicações
+        dashboardName: ${{ parameters.app_name }}-dashboard
+        folderName: ${{ parameters.app_env }}
+        jsonTemplatePath: ./packages/backend/src/templates/grafana-base-dashboard.json
 
   output:
     links:
-      - title: Repositório no GitHub
-        url: ${{ steps['publish'].output.remoteUrl }}
-      - title: Ver no catálogo
-        url: /catalog/default/component/${{ parameters.component_id }}
+      - title: Acessar pasta do código
+        url: https://github.com/sua-org/${{ parameters.app_name }}
+      - title: Acessar dashboard no Grafana
+        url: http://localhost:3333/d/${{ parameters.app_name }}-dashboard
