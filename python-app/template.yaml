@@ -1,62 +1,70 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: python-template
-  title: Python flask template
-  description: Provisions a minimalistic flask application
+  name: python-template-dashboard
+  title: Python Flask com Dashboard Grafana
+  description: Provisions a minimalistic Flask app com dashboard no Grafana
 spec:
   owner: development
   type: service
 
   parameters:
-    - title: Fill in some steps
+    - title: Preencha as informações
       required:
         - component_id
         - environment
       properties:
         component_id:
-          title: Component name
+          title: Nome do componente
           type: string
-          description: Provide a component (microservice) name
+          description: Nome do microserviço
           pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
         environment:
-          title: Environment
+          title: Ambiente
           type: string
-          description: The environment where this component will be deployed
+          description: Onde será implantado
           enum:
             - dev
             - prod
 
   steps:
     - id: fetch-base
-      name: Fetch Base
+      name: Buscar template base
       action: fetch:template
       input:
         url: ./template
         values:
-          app_name: ${{parameters.component_id}}
-          app_env: ${{parameters.environment}}
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
 
     - id: publish
-      name: Publish
+      name: Publicar no GitHub
       action: publish:github
       input:
         allowedHosts:
           - github.com
         description: This is ${{ parameters.component_id }}
-        repoUrl: github.com?owner=org-tests-ca&repo=${{parameters.component_id}}
+        repoUrl: github.com?owner=org-tests-ca&repo=${{ parameters.component_id }}
         protectDefaultBranch: false
         repoVisibility: public
 
     - id: register
-      name: Register in Backstage
+      name: Registrar no catálogo
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
 
+    - id: dashboard
+      name: Criar dashboard no Grafana
+      action: custom:create-grafana-dashboard
+      input:
+        dashboardName: ${{ parameters.component_id }}
+        folder: Aplicações
+
   output:
     links:
-      - title: Repository
+      - title: Acessar repositório
         url: ${{ steps['publish'].output.remoteUrl }}
-
+      - title: Ver no catálogo
+        url: /catalog/default/component/${{ parameters.component_id }}
